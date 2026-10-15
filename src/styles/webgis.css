@@ -1,0 +1,614 @@
+@import "../tokens/colors.css";
+@import "../tokens/contour-plates.css";
+
+/* ==========================================================================
+   1. UTILITY CLASSES & BACKGROUND CONTOUR
+   ========================================================================== */
+.bg-contour-dense {
+  background-image: var(--plate-contour-dense);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.bg-contour-loose {
+  background-image: var(--plate-contour-loose);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* ==========================================================================
+   2. CONTAINER UTAMA BKC (Background Orange BKC Resmi #EA9012)
+   ========================================================================== */
+.webgis-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, sans-serif;
+  background-color: var(--orange-50) !important;
+  position: relative;
+}
+
+/* ==========================================================================
+   3. SIDEBAR KIRI (Solid White & Hapus Scrollbar Kasar)
+   ========================================================================== */
+.bkc-sidebar {
+  width: 320px;
+  min-width: 320px;
+  height: 100%;
+  margin: 0;
+  background-color: var(--bkc-white) !important;
+  border-right: 1px solid var(--border-subtle, #e5e7eb);
+  border-top-right-radius: 20px !important;
+  border-bottom-right-radius: 20px !important;
+  overflow: hidden !important;
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2);
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bkc-sidebar.collapsed {
+  margin-left: -320px;
+}
+
+/* Header Sidebar */
+.bkc-profile-header {
+  padding: 14px 16px;
+  background-color: var(--green-800, #358C67);
+  color: var(--bkc-white);
+  border-top-right-radius: 20px !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bkc-brand-inline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bkc-avatar-wrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  padding: 2px;
+  background: var(--bkc-white);
+  flex-shrink: 0;
+}
+
+.bkc-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.bkc-profile-name {
+  font-family: monospace;
+  font-size: 16px;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: 0.05em;
+  color: var(--bkc-white);
+  white-space: nowrap;
+}
+
+.bkc-toggle-btn {
+  background: transparent;
+  border: none;
+  color: var(--bkc-white);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bkc-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Social Bar */
+.bkc-social-bar {
+  background-color: var(--green-800, #358C67);
+  padding: 0 16px 12px 16px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.bkc-social-links {
+  display: flex;
+  gap: 8px;
+}
+
+.bkc-social-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--bkc-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.bkc-social-icon:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* --------------------------------------------------------------------------
+   SEMBUNYIKAN SCROLLBAR SIDEBAR (Tampilan Bersih & Rapi)
+   -------------------------------------------------------------------------- */
+.bkc-sidebar-content,
+.bkc-maps-control-panel {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE & Edge */
+}
+
+.bkc-sidebar-content::-webkit-scrollbar,
+.bkc-maps-control-panel::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari, Opera */
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.bkc-sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 16px;
+  background-color: var(--bkc-white);
+}
+
+.bkc-nav-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bkc-nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  color: var(--text-muted, #666);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.bkc-nav-icon {
+  flex-shrink: 0;
+}
+
+.bkc-nav-item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bkc-nav-accordion-btn {
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.bkc-chevron-icon {
+  transition: transform 0.2s ease;
+}
+
+.bkc-chevron-icon.is-rotated {
+  transform: rotate(-90deg);
+}
+
+.bkc-nav-item:hover {
+  background: var(--bkc-paper, #f8f9fa);
+  color: var(--text-strong, #111);
+}
+
+.bkc-nav-item.active {
+  background: var(--surface-brand-soft, #e8f5e9);
+  color: var(--bkc-green, #1b4332);
+  font-weight: 700;
+}
+
+/* Sub-Panel Maps Control */
+.bkc-maps-control-panel {
+  margin: 4px 0 8px 12px;
+  padding: 12px;
+  background: var(--bkc-paper, #f8f9fa);
+  border-left: 2px solid var(--bkc-green, #1b4332);
+  border-radius: 0 10px 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 600px;
+  opacity: 1;
+  overflow-y: auto;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bkc-maps-control-panel.is-hidden {
+  max-height: 0;
+  opacity: 0;
+  padding: 0;
+  margin: 0;
+  border-left-color: transparent;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   4. PENYARAGAMAN LABEL FORM SIDEBAR
+   ========================================================================== */
+.bkc-control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bkc-label, 
+.bkc-filter-header {
+  font-family: monospace !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  color: var(--text-muted, #4b5563) !important;
+  letter-spacing: 0.05em !important;
+  margin: 0 0 4px 0 !important;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bkc-search-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.bkc-input, 
+.bkc-select {
+  width: 100%;
+  height: 38px;
+  padding: 8px 12px;
+  font-size: 12px;
+  border: 1px solid var(--border-default, #d1d5db);
+  border-radius: 8px;
+  background: var(--bkc-white, #ffffff);
+  color: var(--text-strong, #111111);
+  box-sizing: border-box;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.bkc-input:focus, 
+.bkc-select:focus {
+  border-color: var(--bkc-green, #1b4332);
+  box-shadow: 0 0 0 2px rgba(27, 67, 50, 0.1);
+}
+
+.bkc-search-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted, #666);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   5. BADGE STATUS LONJONG (PILL FILTER / LEGENDA)
+   ========================================================================== */
+.bkc-pill-filter-group {
+  display: flex;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.bkc-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 700;
+  transition: all 0.25s ease;
+  user-select: none;
+  border: 1.5px solid transparent;
+}
+
+.bkc-status-pill input[type="checkbox"] {
+  display: none;
+}
+
+/* Status Completed */
+.pill-completed {
+  background-color: var(--surface-brand-soft, #e8f5e9);
+  color: var(--bkc-green, #1b4332);
+  border-color: rgba(27, 67, 50, 0.25);
+}
+
+.pill-completed:has(input:checked) {
+  background-color: #d1e7dd;
+  border-color: var(--bkc-green, #1b4332);
+  box-shadow: 0 3px 10px rgba(27, 67, 50, 0.2);
+}
+
+/* Status Ongoing */
+.pill-ongoing {
+  background-color: #fff3e0;
+  color: #d97706;
+  border-color: rgba(217, 119, 6, 0.25);
+}
+
+.pill-ongoing:has(input:checked) {
+  background-color: #ffecb3;
+  border-color: #d97706;
+  box-shadow: 0 3px 10px rgba(217, 119, 6, 0.2);
+}
+
+/* Indikator Titik pada Legend Pill */
+.bkc-pill-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.dot-completed {
+  background-color: #2e7d32;
+  box-shadow: 0 0 6px rgba(46, 125, 50, 0.8);
+}
+
+.dot-ongoing {
+  background-color: #ea580c;
+  box-shadow: 0 0 6px rgba(234, 88, 12, 0.8);
+}
+
+.bkc-status-pill:hover .bkc-pill-dot {
+  transform: scale(1.3);
+}
+
+.bkc-sidebar-footer {
+  display: none !important;
+}
+
+/* ==========================================================================
+   6. AREA UTAMA KONTEN & HEADER STATS
+   ========================================================================== */
+.bkc-main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+.bkc-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.header-left-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bkc-header-stats-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 10px 24px;
+  border-radius: 40px;
+  border: 1.5px solid rgba(27, 67, 50, 0.15);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.bkc-header-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bkc-header-stat-item .stat-number {
+  font-family: monospace;
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: var(--bkc-green, #1b4332);
+}
+
+.bkc-header-stat-item .stat-label {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--text-muted, #4b5563);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.bkc-header-stat-divider {
+  width: 1.5px;
+  height: 20px;
+  background: #d1d5db;
+}
+
+.bkc-floating-toggle {
+  background: var(--bkc-green, #1b4332);
+  color: var(--bkc-white);
+  border: none;
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.bkc-section-title {
+  font-family: monospace;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--bkc-black, #111);
+  margin: 0;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.bkc-dash {
+  color: var(--bkc-black, #111);
+  font-weight: 400;
+}
+
+/* Wrapper Peta */
+.bkc-map-wrapper {
+  flex: 1;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  position: relative;
+  background-color: var(--bkc-white) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bkc-white);
+}
+
+/* ==========================================================================
+   7. CUSTOM MAP DOT MARKER (Menggantikan Pin Default Leaflet)
+   ========================================================================== */
+.leaflet-div-icon.custom-leaflet-marker {
+  background: none !important;
+  border: none !important;
+}
+
+.bkc-map-dot-marker {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+}
+
+.bkc-map-dot-marker::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border-radius: 50%;
+  border: 2px solid inherit;
+  opacity: 0.6;
+  animation: bkc-pulse 2s infinite ease-in-out;
+}
+
+.marker-dot-completed {
+  background-color: #2e7d32;
+  border-color: #ffffff;
+}
+
+.marker-dot-ongoing {
+  background-color: #ea580c;
+  border-color: #ffffff;
+}
+
+@keyframes bkc-pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+/* Leaflet Popup Clean Overrides */
+.leaflet-popup {
+  margin-bottom: 20px !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+  display: none !important;
+}
+
+/* =========================================================
+   1. STYLING STATUS PILLS MULTI-SELECT (SIDEBAR KIRI)
+   ========================================================= */
+.bkc-status-pill {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  user-select: none;
+}
+
+.bkc-status-pill input[type="checkbox"] {
+  display: none; /* Sembunyikan checkbox bawaan */
+}
+
+/* State Mati (Off) -> Tetap terlihat jelas dengan background soft & border halus */
+.bkc-status-pill.is-disabled {
+  opacity: 1 !important;
+  filter: none !important;
+  background-color: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+.bkc-status-pill.is-disabled .bkc-pill-text {
+  color: #64748b !important; /* Warna abu-abu yang tetap mudah dibaca */
+}
+
+.bkc-status-pill.is-disabled .bkc-pill-dot {
+  background-color: #94a3b8 !important; /* Dot berwarna abu-abu terang saat off */
+  box-shadow: none !important;
+}
+
+/* State Aktif */
+.bkc-status-pill.active {
+  opacity: 1 !important;
+}

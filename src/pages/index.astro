@@ -1,0 +1,576 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { 
+  Search, 
+  Menu, 
+  Home, 
+  User, 
+  Zap, 
+  Map, 
+  FileText, 
+  Mail, 
+  Linkedin, 
+  Github, 
+  Globe,
+  ChevronDown,
+  X
+} from 'lucide-astro';
+import projectData from '../data/projects.json';
+
+// --- PENYESUAIAN IMPORT TOKENS & STYLES (Menggunakan Alias `@/` merujuk ke folder `src/`) ---
+// Jika folder tokens ada di `src/tokens/`:
+import '@/tokens/fonts.css';
+import '@/tokens/spacing.css';
+import '@/tokens/typography.css';
+
+// Jika folder styles ada di `src/styles/`:
+import '@/styles/webgis.css';
+import '@/styles/hover-card.css';
+import '@/styles/sidebar-right.css';
+---
+
+<BaseLayout title="Bumi Kala Charta — WebGIS Sebaran Proyek Pemetaan">
+  <div class="webgis-container relative overflow-hidden bg-contour-loose font-sans text-slate-800">
+
+    <!-- 1. SIDEBAR KIRI -->
+    <aside id="sidebar" class="bkc-sidebar relative">
+      <div class="bkc-profile-header relative z-10 flex items-center justify-between p-[var(--space-4)]">
+        <div class="bkc-brand-inline flex items-center gap-[var(--space-3)]">
+          <div class="bkc-avatar-wrapper">
+            <img src="/logo-emblem.png" alt="BKC Emblem" class="bkc-avatar h-9 w-9 object-contain" />
+          </div>
+          <h2 class="bkc-profile-name text-[var(--text-title-3)] font-[var(--weight-bold)] tracking-[var(--tracking-wordmark)] text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-slate-300">
+            BUMI KALA CHARTA
+          </h2>
+        </div>
+
+        <button id="sidebar-toggle-btn" class="bkc-toggle-btn text-slate-300 hover:text-white transition-colors" title="Sembunyikan Sidebar">
+          <Menu size={18} />
+        </button>
+      </div>
+
+      <div class="bkc-social-bar relative z-10 px-[var(--space-4)] py-[var(--space-2)] border-b border-white/10">
+        <div class="bkc-social-links flex items-center gap-[var(--space-3)]">
+          <a href="#" class="bkc-social-icon text-slate-400 hover:text-white transition-colors" title="LinkedIn"><Linkedin size={14} /></a>
+          <a href="#" class="bkc-social-icon text-slate-400 hover:text-white transition-colors" title="GitHub"><Github size={14} /></a>
+          <a href="#" class="bkc-social-icon text-slate-400 hover:text-white transition-colors" title="Website"><Globe size={14} /></a>
+        </div>
+      </div>
+
+      <div class="bkc-sidebar-content relative z-10 p-[var(--space-4)]">
+        <nav class="bkc-nav-menu flex flex-col gap-[var(--space-2)]">
+          <a href="#home" class="bkc-nav-item flex items-center gap-[var(--space-3)] px-[var(--space-3)] py-[var(--space-2)] rounded text-[var(--text-body-sm)] font-[var(--weight-medium)]">
+            <Home size={16} class="bkc-nav-icon" /> <span>Home</span>
+          </a>
+          <a href="#about" class="bkc-nav-item flex items-center gap-[var(--space-3)] px-[var(--space-3)] py-[var(--space-2)] rounded text-[var(--text-body-sm)] font-[var(--weight-medium)]">
+            <User size={16} class="bkc-nav-icon" /> <span>About</span>
+          </a>
+          <a href="#skills" class="bkc-nav-item flex items-center gap-[var(--space-3)] px-[var(--space-3)] py-[var(--space-2)] rounded text-[var(--text-body-sm)] font-[var(--weight-medium)]">
+            <Zap size={16} class="bkc-nav-icon" /> <span>Skills</span>
+          </a>
+          
+          <button type="button" id="maps-toggle-btn" class="bkc-nav-item active bkc-nav-accordion-btn w-full flex items-center justify-between px-[var(--space-3)] py-[var(--space-2)] rounded text-[var(--text-body-sm)] font-[var(--weight-medium)]">
+            <div class="bkc-nav-item-left flex items-center gap-[var(--space-3)]">
+              <Map size={16} class="bkc-nav-icon" /> <span>Maps</span>
+            </div>
+            <ChevronDown size={14} id="maps-chevron" class="bkc-chevron-icon transition-transform duration-200" />
+          </button>
+
+          <!-- CONTENT MAP SECTION PANEL -->
+          <div id="maps-control-panel" class="bkc-maps-control-panel flex flex-col gap-[var(--space-4)] pt-[var(--space-2)]">
+            
+            <!-- SEARCH PROJECT -->
+            <div class="bkc-control-group flex flex-col gap-[var(--space-1)]">
+              <label class="bkc-label font-mono text-[var(--text-eyebrow)] font-[var(--weight-medium)] tracking-[var(--tracking-eyebrow)] uppercase text-slate-400">SEARCH PROJECT</label>
+              <div class="bkc-search-wrapper relative">
+                <input type="text" id="search-input" placeholder="Search location / type / client..." class="bkc-input w-full font-sans text-[var(--text-body-sm)] py-[var(--space-2)] px-[var(--space-3)] pr-[var(--space-8)] rounded border" />
+                <Search size={16} class="bkc-search-icon absolute right-[var(--space-3)] top-1/2 -translate-y-1/2 text-slate-400" />
+              </div>
+            </div>
+
+            <!-- STATUS (MULTI-SELECT SUPPORT) -->
+            <div class="bkc-control-group flex flex-col gap-[var(--space-1)]">
+              <label class="bkc-label font-mono text-[var(--text-eyebrow)] font-[var(--weight-medium)] tracking-[var(--tracking-eyebrow)] uppercase text-slate-400">STATUS</label>
+              
+              <div class="bkc-pill-filter-group flex gap-[var(--space-2)]">
+                <label class="bkc-status-pill pill-completed active flex items-center gap-[var(--space-2)] px-[var(--space-3)] py-[var(--space-1)] rounded-full text-[var(--text-caption)] font-medium cursor-pointer" id="label-completed">
+                  <input type="checkbox" id="filter-completed" checked class="hidden" />
+                  <span class="bkc-pill-dot dot-completed w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span class="bkc-pill-text">Completed</span>
+                </label>
+                
+                <label class="bkc-status-pill pill-ongoing active flex items-center gap-[var(--space-2)] px-[var(--space-3)] py-[var(--space-1)] rounded-full text-[var(--text-caption)] font-medium cursor-pointer" id="label-ongoing">
+                  <input type="checkbox" id="filter-progress" checked class="hidden" />
+                  <span class="bkc-pill-dot dot-ongoing w-2 h-2 rounded-full bg-amber-500"></span>
+                  <span class="bkc-pill-text">Ongoing</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- YEAR -->
+            <div class="bkc-control-group flex flex-col gap-[var(--space-1)]">
+              <label class="bkc-label font-mono text-[var(--text-eyebrow)] font-[var(--weight-medium)] tracking-[var(--tracking-eyebrow)] uppercase text-slate-400">YEAR</label>
+              <select id="year-select" class="bkc-select font-sans text-[var(--text-body-sm)] py-[var(--space-2)] px-[var(--space-3)] rounded border">
+                <option value="all">All Years</option>
+                <option value="2026">2026</option>
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+              </select>
+            </div>
+
+            <!-- MAPPING TYPE -->
+            <div class="bkc-control-group flex flex-col gap-[var(--space-1)]">
+              <label class="bkc-label font-mono text-[var(--text-eyebrow)] font-[var(--weight-medium)] tracking-[var(--tracking-eyebrow)] uppercase text-slate-400">MAPPING TYPE</label>
+              <select id="type-select" class="bkc-select font-sans text-[var(--text-body-sm)] py-[var(--space-2)] px-[var(--space-3)] rounded border">
+                <option value="all">All Mapping Types</option>
+                <option value="fotogrametri">Drone Photogrammetry</option>
+                <option value="lidar">LiDAR Survey</option>
+                <option value="terestris">Terrestrial & Topography</option>
+                <option value="bathymetry">Bathymetry / Hydrography</option>
+                <option value="gis_analysis">GIS Analysis & Spatial</option>
+              </select>
+            </div>
+
+            <!-- COVERAGE AREA -->
+            <div class="bkc-control-group flex flex-col gap-[var(--space-1)]">
+              <label class="bkc-label font-mono text-[var(--text-eyebrow)] font-[var(--weight-medium)] tracking-[var(--tracking-eyebrow)] uppercase text-slate-400">REGION</label>
+              <select id="region-select" class="bkc-select font-sans text-[var(--text-body-sm)] py-[var(--space-2)] px-[var(--space-3)] rounded border">
+                <option value="all">All Indonesia</option>
+                <option value="jawa" selected>Java</option>
+                <option value="sumatera">Sumatra</option>
+                <option value="kalimantan">Kalimantan</option>
+                <option value="sulawesi">Sulawesi</option>
+                <option value="bali_nusa">Bali & Nusa Tenggara</option>
+                <option value="maluku_papua">Maluku & Papua</option>
+              </select>
+            </div>
+
+          </div>
+
+          <a href="#blog" class="bkc-nav-item flex items-center gap-[var(--space-3)] px-[var(--space-3)] py-[var(--space-2)] rounded text-[var(--text-body-sm)] font-[var(--weight-medium)]">
+            <FileText size={16} class="bkc-nav-icon" /> <span>Blog</span>
+          </a>
+          <a href="#contact" class="bkc-nav-item flex items-center gap-[var(--space-3)] px-[var(--space-3)] py-[var(--space-2)] rounded text-[var(--text-body-sm)] font-[var(--weight-medium)]">
+            <Mail size={16} class="bkc-nav-icon" /> <span>Contact</span>
+          </a>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- 2. AREA KONTEN UTAMA & PETA -->
+    <main class="bkc-main-content relative z-10 flex flex-col h-full">
+      <header class="bkc-page-header flex items-center justify-between p-[var(--space-4)] border-b border-slate-200/80 bg-white/50 backdrop-blur">
+        <div class="header-left-group flex items-center gap-[var(--space-3)]">
+          <button id="floating-toggle-btn" class="bkc-floating-toggle p-[var(--space-2)] rounded border bg-white shadow-sm" title="Tampilkan Sidebar">
+            <Menu size={18} />
+          </button>
+          <h1 class="bkc-section-title font-mono text-[var(--text-title-3)] font-[var(--weight-bold)] tracking-[var(--tracking-eyebrow)] uppercase flex items-center gap-[var(--space-2)]">
+            <span class="bkc-dash text-slate-400">—</span> PROJECT FOOTPRINT
+          </h1>
+        </div>
+
+        <!-- INFORMASI DI ATAS PETA: TOTAL PROJECTS, COMPLETED, ONGOING -->
+        <div class="bkc-header-stats-wrapper flex items-center gap-[var(--space-4)] px-[var(--space-4)] py-[var(--space-2)] rounded-lg bg-slate-900/5 backdrop-blur">
+          <div class="bkc-header-stat-item flex flex-col items-center">
+            <span class="stat-number font-mono text-[var(--text-title-3)] font-[var(--weight-bold)] text-slate-900 leading-tight" id="header-total-projects">0</span>
+            <span class="stat-label font-mono text-[var(--text-micro)] tracking-[var(--tracking-mono)] uppercase text-slate-500">Total Projects</span>
+          </div>
+          <div class="bkc-header-stat-divider w-[1px] h-6 bg-slate-300"></div>
+          <div class="bkc-header-stat-item flex flex-col items-center">
+            <span class="stat-number font-mono text-[var(--text-title-3)] font-[var(--weight-bold)] text-emerald-600 leading-tight" id="header-completed-projects">0</span>
+            <span class="stat-label font-mono text-[var(--text-micro)] tracking-[var(--tracking-mono)] uppercase text-slate-500">Completed</span>
+          </div>
+          <div class="bkc-header-stat-divider w-[1px] h-6 bg-slate-300"></div>
+          <div class="bkc-header-stat-item flex flex-col items-center">
+            <span class="stat-number font-mono text-[var(--text-title-3)] font-[var(--weight-bold)] text-amber-600 leading-tight" id="header-ongoing-projects">0</span>
+            <span class="stat-label font-mono text-[var(--text-micro)] tracking-[var(--tracking-mono)] uppercase text-slate-500">Ongoing</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="bkc-map-wrapper flex-1 relative">
+        <div id="map" class="w-full h-full"></div>
+      </div>
+    </main>
+
+    <!-- 3. SIDEBAR DETAIL KANAN -->
+    <aside class="bkc-right-sidebar" id="rightSidebar">
+      <div class="bkc-right-sidebar-header flex items-center justify-between p-[var(--space-4)] border-b border-slate-200">
+        <h3 class="bkc-right-sidebar-title font-mono text-[var(--text-eyebrow)] font-[var(--weight-bold)] tracking-[var(--tracking-eyebrow)] uppercase text-slate-700">PROJECT DETAIL</h3>
+        <button class="bkc-close-btn p-[var(--space-1)] hover:bg-slate-100 rounded transition-colors" id="closeRightSidebarBtn" title="Tutup">
+          <X size={18} />
+        </button>
+      </div>
+      <div class="bkc-right-sidebar-body hide-scrollbar p-[var(--space-6)] flex flex-col gap-[var(--space-5)]" id="rightSidebarContent"></div>
+    </aside>
+
+  </div>
+
+  <script define:vars={{ projectData }}>
+    // @ts-nocheck
+    const regionBounds = {
+      all: { center: [-2.5489, 118.0149], zoom: 5 },
+      jawa: { center: [-6.9175, 107.6191], zoom: 8 },
+      sumatera: { center: [0.5897, 101.3431], zoom: 6 },
+      kalimantan: { center: [-0.4948, 117.1436], zoom: 6 },
+      sulawesi: { center: [-1.4300, 121.4456], zoom: 6 },
+      bali_nusa: { center: [-8.6500, 116.3249], zoom: 8 },
+      maluku_papua: { center: [-4.2699, 138.0804], zoom: 6 }
+    };
+
+    const SVG_ICONS = {
+      gis_analysis: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`,
+      lidar: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M3 12h3m12 0h3M12 3v3m0 12v3"/></svg>`,
+      bathymetry: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 6c.6 0 1.2.2 1.6.6L5 8l1.4-1.4C6.8 6.2 7.4 6 8 6s1.2.2 1.6.6L11 8l1.4-1.4c.4-.4 1-.6 1.6-.6s1.2.2 1.6.6L17 8l1.4-1.4c.4-.4 1-.6 1.6-.6s1.2.2 1.6.6"/><path d="M2 12c.6 0 1.2.2 1.6.6L5 14l1.4-1.4c.4-.4 1-.6 1.6-.6s1.2.2 1.6.6L11 14l1.4-1.4c.4-.4 1-.6 1.6-.6s1.2.2 1.6.6L17 14l1.4-1.4c.4-.4 1-.6 1.6-.6s1.2.2 1.6.6"/><path d="M2 18c.6 0 1.2.2 1.6.6L5 20l1.4-1.4c.4-.4 1-.6 1.6-.6s1.2.2 1.6.6L11 20l1.4-1.4c.4-.4 1-.6 1.6-.6s1.2.2 1.6.6L17 20l1.4-1.4c.4-.4 1-.6 1.6-.6s1.2.2 1.6.6"/></svg>`,
+      fotogrametri: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
+      terestris: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.3 15.3l-7.9-12c-.7-1-2.1-1-2.8 0l-7.9 12c-.7 1 0 2.7 1.4 2.7h15.8c1.4 0 2.1-1.7 1.4-2.7z"/></svg>`
+    };
+
+    const MAPPING_TYPES = [
+      { id: 'fotogrametri', label: 'Photogrammetry', icon: SVG_ICONS.fotogrametri },
+      { id: 'lidar', label: 'LiDAR', icon: SVG_ICONS.lidar },
+      { id: 'bathymetry', label: 'Bathymetry', icon: SVG_ICONS.bathymetry },
+      { id: 'gis_analysis', label: 'GIS Spatial', icon: SVG_ICONS.gis_analysis },
+      { id: 'terestris', label: 'Terrestrial', icon: SVG_ICONS.terestris }
+    ];
+
+    function openProjectDetail(projId) {
+      const proj = projectData.find(p => p.id === projId);
+      if (!proj) return;
+
+      const contentContainer = document.getElementById('rightSidebarContent');
+      if (!contentContainer) return;
+
+      const coverImage = proj.coverUrl || '/foto.png';
+      const isCompleted = proj.status === 'completed';
+      const statusClass = isCompleted ? 'bkc-spec-status-completed text-emerald-600 font-[var(--weight-semibold)]' : 'bkc-spec-status-ongoing text-amber-600 font-[var(--weight-semibold)]';
+      const statusText = isCompleted ? 'Completed' : 'Ongoing';
+      const progressVal = proj.progress || (isCompleted ? 100 : 65);
+      const contributorsCount = proj.contributors || 29;
+      const lastUpdateText = proj.lastUpdated || '43 minutes ago';
+      const imagerySource = proj.imagerySource || 'Bing';
+      const blogUrl = proj.blogUrl || `/blog/${proj.id.toLowerCase()}`;
+      
+      const methodStr = (proj.method || '').toLowerCase();
+      const typeStr = (proj.type || '').toLowerCase();
+      const combinedText = `${methodStr} ${typeStr}`;
+
+      const mappingChipsHTML = MAPPING_TYPES.map(t => {
+        let isActive = combinedText.includes(t.id);
+
+        if (t.id === 'bathymetry' && (combinedText.includes('singlebeam') || combinedText.includes('multibeam') || combinedText.includes('echosounder') || combinedText.includes('hidro-oseanografi'))) {
+          isActive = true;
+        }
+        if (t.id === 'terestris' && (combinedText.includes('gnss') || combinedText.includes('rtk') || combinedText.includes('total station') || combinedText.includes('topografi'))) {
+          isActive = true;
+        }
+        if (t.id === 'fotogrametri' && (combinedText.includes('drone') || combinedText.includes('uav') || combinedText.includes('aerial'))) {
+          isActive = true;
+        }
+        if (t.id === 'gis_analysis' && (combinedText.includes('spasial') || combinedText.includes('gis') || combinedText.includes('peta'))) {
+          isActive = true;
+        }
+
+        return `
+          <div class="bkc-modern-chip p-[var(--space-2)] rounded border ${isActive ? 'is-active bg-emerald-950 text-emerald-400 border-emerald-800' : 'is-off border-slate-200 text-slate-400'}" title="${t.label}">
+            <span class="bkc-chip-icon">${t.icon}</span>
+          </div>
+        `;
+      }).join('');
+
+      contentContainer.innerHTML = `
+        <div class="bkc-blog-meta font-mono text-[var(--text-micro)] tracking-[var(--tracking-mono)] uppercase text-slate-500">${proj.id} • ${proj.tag || 'GIS MAPPING'}</div>
+        <h2 class="bkc-blog-title font-sans text-[var(--text-title-2)] font-[var(--weight-bold)] tracking-[var(--tracking-title)] text-slate-900 leading-[var(--leading-title)]">${proj.title}</h2>
+        
+        <img src="${coverImage}" class="bkc-blog-cover w-full h-44 object-cover rounded-md" alt="${proj.title}">
+
+        <div class="bkc-spec-grid grid grid-cols-2 gap-[var(--space-4)] p-[var(--space-4)] rounded-md bg-slate-50 border border-slate-100">
+          <div class="bkc-spec-item flex flex-col gap-[var(--space-1)]">
+            <span class="bkc-spec-label font-mono text-[var(--text-micro)] tracking-[var(--tracking-mono)] uppercase text-slate-400">STATUS</span>
+            <span class="bkc-spec-value font-sans text-[var(--text-body-sm)] ${statusClass}">${statusText}</span>
+          </div>
+          <div class="bkc-spec-item flex flex-col gap-[var(--space-1)]">
+            <span class="bkc-spec-label font-mono text-[var(--text-micro)] tracking-[var(--tracking-mono)] uppercase text-slate-400">CLIENT</span>
+            <span class="bkc-spec-value font-sans text-[var(--text-body-sm)] font-[var(--weight-medium)] text-slate-800">${proj.client || 'Kementerian PUPR / Swasta'}</span>
+          </div>
+          <div class="bkc-spec-item flex flex-col gap-[var(--space-1)]">
+            <span class="bkc-spec-label font-mono text-[var(--text-micro)] tracking-[var(--tracking-mono)] uppercase text-slate-400">LOCATION</span>
+            <span class="bkc-spec-value font-sans text-[var(--text-body-sm)] font-[var(--weight-medium)] text-slate-800">${proj.location}</span>
+          </div>
+          
+          <div class="bkc-spec-item flex flex-col gap-[var(--space-1)]">
+            <span class="bkc-spec-label font-mono text-[var(--text-micro)] tracking-[var(--tracking-mono)] uppercase text-slate-400">DATA ACQUISITION</span>
+            <span class="bkc-spec-value font-sans text-[var(--text-body-sm)] font-[var(--weight-medium)] text-slate-800">${proj.method}</span>
+          </div>
+
+          <div class="bkc-spec-item flex flex-col gap-[var(--space-1)]">
+            <span class="bkc-spec-label font-mono text-[var(--text-micro)] tracking-[var(--tracking-mono)] uppercase text-slate-400">YEAR</span>
+            <span class="bkc-spec-value font-mono text-[var(--text-body-sm)] font-[var(--weight-medium)] text-slate-800">${proj.year || '2024'}</span>
+          </div>
+          <div class="bkc-spec-item flex flex-col gap-[var(--space-1)]">
+            <span class="bkc-spec-label font-mono text-[var(--text-micro)] tracking-[var(--tracking-mono)] uppercase text-slate-400">SCALE</span>
+            <span class="bkc-spec-value font-mono text-[var(--text-body-sm)] font-[var(--weight-medium)] text-slate-800">${proj.scale || '1:1.000'}</span>
+          </div>
+
+          <div class="bkc-spec-item flex flex-col gap-[var(--space-1)] col-span-2">
+            <span class="bkc-spec-label font-mono text-[var(--text-micro)] tracking-[var(--tracking-mono)] uppercase text-slate-400">PROJECT AREA</span>
+            <span class="bkc-spec-value font-sans text-[var(--text-body-sm)] font-[var(--weight-medium)] text-slate-800">${proj.projectArea || '150 Ha'}</span>
+          </div>
+        </div>
+
+        <div class="bkc-blog-text font-sans text-[var(--text-body-sm)] leading-[var(--leading-body)] text-slate-600 flex flex-col gap-[var(--space-3)]">
+          <p>${proj.blogContent || proj.description || 'Pemetaan area terperinci dan pengolahan data spasial akurat.'}</p>
+          
+          <div class="bkc-readmore-wrapper">
+            <a href="${blogUrl}" target="_blank" rel="noopener noreferrer" class="bkc-btn-readmore inline-flex items-center gap-[var(--space-2)] font-mono text-[var(--text-micro)] tracking-[var(--tracking-mono)] font-[var(--weight-semibold)] text-slate-900 border border-slate-300 px-[var(--space-3)] py-[var(--space-2)] rounded hover:bg-slate-50 transition-colors uppercase">
+              <span>VIEW PROJECT &rarr;</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="bkc-detail-extra-section flex flex-col gap-[var(--space-4)] pt-[var(--space-4)] border-t border-slate-100">
+          <div class="bkc-extra-row flex justify-between gap-[var(--space-4)]">
+            <div class="bkc-extra-col flex flex-col gap-[var(--space-1)]">
+              <span class="bkc-extra-title font-mono text-[var(--text-micro)] tracking-[var(--tracking-mono)] uppercase text-slate-400">TYPES OF MAPPING</span>
+              <div class="bkc-mapping-icons-modern flex gap-[var(--space-2)]">
+                ${mappingChipsHTML}
+              </div>
+            </div>
+            
+            <div class="bkc-extra-col flex flex-col gap-[var(--space-1)]">
+              <span class="bkc-extra-title font-mono text-[var(--text-micro)] tracking-[var(--tracking-mono)] uppercase text-slate-400">IMAGERY</span>
+              <div class="bkc-imagery-val font-sans text-[var(--text-body-sm)] font-[var(--weight-bold)] text-slate-900">${imagerySource}</div>
+            </div>
+          </div>
+
+          <div class="bkc-contrib-row flex items-center justify-between font-sans text-[var(--text-caption)] text-slate-500">
+            <div class="bkc-contrib-left">
+              <strong class="font-mono text-slate-900 font-[var(--weight-bold)]">${contributorsCount}</strong> contributors
+            </div>
+            <div class="bkc-contrib-right font-mono text-[var(--text-micro)]">
+              Last contribution ${lastUpdateText}
+            </div>
+          </div>
+
+          <div class="bkc-progress-container w-full">
+            <div class="bkc-progress-bar-bg w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+              <div class="bkc-progress-bar-fill h-full bg-slate-900 transition-all duration-500" style="width: ${progressVal}%;"></div>
+            </div>
+          </div>
+
+          <div class="bkc-difficulty-row flex items-center justify-between font-sans text-[var(--text-caption)]">
+            <span class="bkc-difficulty-tag px-[var(--space-2)] py-0.5 rounded bg-slate-100 font-mono text-[var(--text-micro)] text-slate-600 font-[var(--weight-medium)]">Moderate</span>
+            <span class="bkc-nodue-text font-mono text-[var(--text-micro)] text-slate-400">No due date specified</span>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('rightSidebar')?.classList.add('open');
+    }
+
+    window.openProjectDetail = openProjectDetail;
+
+    function initMap() {
+      // @ts-ignore
+      if (typeof L === 'undefined') {
+        setTimeout(initMap, 100);
+        return;
+      }
+
+      const mapContainer = document.getElementById('map');
+      if (!mapContainer) return;
+
+      // @ts-ignore
+      const map = L.map('map', { zoomControl: false }).setView(regionBounds.jawa.center, regionBounds.jawa.zoom);
+
+      // @ts-ignore
+      L.control.zoom({ position: 'topright' }).addTo(map);
+
+      // @ts-ignore
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap | Bumi Kala Charta Geomatics'
+      }).addTo(map);
+
+      setTimeout(() => { map.invalidateSize(); }, 200);
+
+      const sidebar = document.getElementById('sidebar');
+      const toggleBtn = document.getElementById('sidebar-toggle-btn');
+      const floatingToggleBtn = document.getElementById('floating-toggle-btn');
+
+      function toggleSidebar() {
+        sidebar.classList.toggle('collapsed');
+        const isCollapsed = sidebar.classList.contains('collapsed');
+        floatingToggleBtn.style.display = isCollapsed ? 'inline-flex' : 'none';
+        setTimeout(() => { map.invalidateSize(); }, 300);
+      }
+
+      toggleBtn?.addEventListener('click', toggleSidebar);
+      floatingToggleBtn?.addEventListener('click', toggleSidebar);
+
+      const mapsToggleBtn = document.getElementById('maps-toggle-btn');
+      const mapsControlPanel = document.getElementById('maps-control-panel');
+      const mapsChevron = document.getElementById('maps-chevron');
+
+      mapsToggleBtn?.addEventListener('click', () => {
+        mapsControlPanel?.classList.toggle('is-hidden');
+        mapsChevron?.classList.toggle('is-rotated');
+      });
+
+      const createCustomIcon = (status) => {
+        const dotClass = status === 'completed' ? 'marker-dot-completed' : 'marker-dot-ongoing';
+        // @ts-ignore
+        return L.divIcon({
+          className: 'custom-leaflet-marker',
+          html: `<div class="bkc-map-dot-marker ${dotClass}"></div>`,
+          iconSize: [16, 16],
+          iconAnchor: [8, 8],
+          popupAnchor: [0, -10]
+        });
+      };
+
+      function createHoverCardHTML(proj) {
+        const isCompleted = proj.status === 'completed';
+        const badgeText = isCompleted ? 'COMPLETED' : 'ONGOING';
+        const badgeClass = isCompleted ? 'completed' : 'ongoing';
+        const progressVal = proj.progress || (isCompleted ? 100 : 50);
+        const cardImg = proj.coverUrl || '/foto.png';
+
+        return `
+          <div class="bkc-hover-card font-sans p-[var(--pad-card)] max-w-xs flex flex-col gap-[var(--space-2)]">
+            <div class="bkc-card-image-wrapper w-full h-32 rounded overflow-hidden">
+              <img src="${cardImg}" class="bkc-card-img-full w-full h-full object-cover" alt="${proj.title}" />
+            </div>
+            
+            <div class="bkc-card-meta-row flex items-center justify-between font-mono text-[var(--text-micro)] tracking-[var(--tracking-mono)]">
+              <span class="bkc-card-meta-id text-slate-500 uppercase">${proj.id}</span>
+              <span class="bkc-status-outline ${badgeClass} font-[var(--weight-semibold)]">${badgeText}</span>
+            </div>
+
+            <div class="bkc-card-tag-sub font-mono text-[var(--text-micro)] tracking-[var(--tracking-mono)] text-slate-400 uppercase">${proj.tag || 'GIS MAPPING'}</div>
+
+            <h4 class="bkc-card-title font-sans text-[var(--text-body-lg)] font-[var(--weight-bold)] text-slate-900 cursor-pointer leading-[var(--leading-tight)]" onclick="window.openProjectDetail('${proj.id}')">${proj.title}</h4>
+            
+            <p class="bkc-card-desc font-sans text-[var(--text-caption)] text-slate-600 line-clamp-2 leading-[var(--leading-body)]">${proj.description || `Pemetaan lokasi ${proj.location} menggunakan metode...`}</p>
+            
+            <div class="bkc-card-progress-section flex flex-col gap-[var(--space-2)] pt-[var(--space-2)]">
+              <div class="bkc-card-stats font-sans text-[var(--text-caption)] text-slate-700">Client: <strong class="font-[var(--weight-semibold)] text-slate-900">${proj.client || 'Instansi / Swasta'}</strong></div>
+              <div class="bkc-progress-bar-bg w-full h-1 bg-slate-100 rounded-full overflow-hidden">
+                <div class="bkc-progress-bar-fill h-full bg-slate-900" style="width: ${progressVal}%;"></div>
+              </div>
+              <div class="bkc-card-footer-text font-mono text-[var(--text-micro)] tracking-[var(--tracking-mono)] text-slate-500">📍 ${proj.location}</div>
+            </div>
+          </div>
+        `;
+      }
+
+      // @ts-ignore
+      const markersGroup = L.layerGroup().addTo(map);
+
+      function renderMarkers() {
+        markersGroup.clearLayers();
+        
+        const showCompleted = document.getElementById('filter-completed')?.checked;
+        const showProgress = document.getElementById('filter-progress')?.checked;
+        const selectedYear = document.getElementById('year-select')?.value || 'all';
+        const selectedType = document.getElementById('type-select')?.value || 'all';
+        const searchQuery = document.getElementById('search-input')?.value.toLowerCase() || '';
+
+        let totalActive = 0;
+        let completedCount = 0;
+        let ongoingCount = 0;
+
+        projectData.forEach(proj => {
+          const isCompleted = proj.status === 'completed';
+          const matchesStatus = (isCompleted && showCompleted) || 
+                                (!isCompleted && showProgress);
+          
+          const projYear = proj.year ? String(proj.year) : '2024';
+          const matchesYear = selectedYear === 'all' || projYear === selectedYear;
+
+          const projType = (proj.type || proj.method || '').toLowerCase();
+          const matchesType = selectedType === 'all' || projType.includes(selectedType);
+
+          const matchesSearch = proj.title.toLowerCase().includes(searchQuery) || 
+                                proj.location.toLowerCase().includes(searchQuery) ||
+                                proj.id.toLowerCase().includes(searchQuery) ||
+                                (proj.client && proj.client.toLowerCase().includes(searchQuery));
+
+          if (matchesStatus && matchesYear && matchesType && matchesSearch) {
+            totalActive++;
+            if (isCompleted) completedCount++;
+            else ongoingCount++;
+
+            // @ts-ignore
+            const marker = L.marker([proj.lat, proj.lng], { icon: createCustomIcon(proj.status) });
+            
+            marker.bindPopup(createHoverCardHTML(proj), {
+              offset: [0, -5],
+              closeButton: false,
+              autoPan: true,
+              autoPanPadding: [20, 20]
+            });
+
+            let timer;
+            marker.on('mouseover', function () {
+              clearTimeout(timer);
+              this.openPopup();
+            });
+
+            marker.on('mouseout', function () {
+              timer = setTimeout(() => {
+                const popupEl = document.querySelector('.leaflet-popup');
+                if (popupEl && popupEl.matches(':hover')) return;
+                marker.closePopup();
+              }, 300);
+            });
+
+            marker.on('click', () => {
+              window.openProjectDetail(proj.id);
+            });
+
+            markersGroup.addLayer(marker);
+          }
+        });
+
+        document.getElementById('header-total-projects').innerText = totalActive;
+        document.getElementById('header-completed-projects').innerText = completedCount;
+        document.getElementById('header-ongoing-projects').innerText = ongoingCount;
+      }
+
+      document.getElementById('filter-completed')?.addEventListener('change', (e) => {
+        document.getElementById('label-completed')?.classList.toggle('active', e.target.checked);
+        renderMarkers();
+      });
+
+      document.getElementById('filter-progress')?.addEventListener('change', (e) => {
+        document.getElementById('label-ongoing')?.classList.toggle('active', e.target.checked);
+        renderMarkers();
+      });
+
+      document.getElementById('year-select')?.addEventListener('change', renderMarkers);
+      document.getElementById('type-select')?.addEventListener('change', renderMarkers);
+      document.getElementById('search-input')?.addEventListener('input', renderMarkers);
+
+      document.getElementById('region-select')?.addEventListener('change', (e) => {
+        const val = e.target.value;
+        if (regionBounds[val]) {
+          map.flyTo(regionBounds[val].center, regionBounds[val].zoom, { duration: 1.5 });
+        }
+      });
+
+      document.getElementById('closeRightSidebarBtn')?.addEventListener('click', () => {
+        document.getElementById('rightSidebar')?.classList.remove('open');
+      });
+
+      renderMarkers();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initMap);
+    } else {
+      initMap();
+    }
+  </script>
+</BaseLayout>

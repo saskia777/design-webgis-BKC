@@ -1,0 +1,57 @@
+[
+  {
+    "id": "BKC-PRJ-001",
+    "title": "Pemetaan Topografi & Benchmark JJK",
+    "location": "Kawasan Dago, Bandung",
+    "lat": -6.8722,
+    "lng": 107.6173,
+    "status": "completed",
+    "method": "Pengukuran Terestris & GNSS RTK",
+    "date": "Agustus 2026",
+    "scale": "1:1.000"
+  },
+  {
+    "id": "BKC-PRJ-002",
+    "title": "Akuisisi Foto Udara (Fotogrametri)",
+    "location": "Padalarang, Bandung Barat",
+    "lat": -6.8402,
+    "lng": 107.4745,
+    "status": "completed",
+    "method": "Drone UAV & Titik Kontrol GCP",
+    "date": "Juli 2026",
+    "scale": "1:500"
+  },
+  {
+    "id": "BKC-PRJ-003",
+    "title": "Pengukuran Batas Cadastral Persil Lahan",
+    "location": "Jatinangor, Sumedang",
+    "lat": -6.9312,
+    "lng": 107.7725,
+    "status": "in_progress",
+    "method": "GNSS Statik & Total Station",
+    "date": "September 2026",
+    "scale": "1:1.000"
+  },
+  {
+    "id": "BKC-PRJ-004",
+    "title": "Survei Batimetri & Profil Alur Sungai",
+    "location": "Citarum, Dayeuhkolot",
+    "lat": -6.9831,
+    "lng": 107.6214,
+    "status": "completed",
+    "method": "Singlebeam Echosounder & GNSS",
+    "date": "Mei 2026",
+    "scale": "1:2.500"
+  },
+  {
+    "id": "BKC-PRJ-005",
+    "title": "Pemetaan LiDAR & Pemodelan 3D",
+    "location": "Lembang, Bandung Barat",
+    "lat": -6.8123,
+    "lng": 107.6102,
+    "status": "in_progress",
+    "method": "Airborne LiDAR Scanning",
+    "date": "September 2026",
+    "scale": "1:1.000"
+  }
+]
